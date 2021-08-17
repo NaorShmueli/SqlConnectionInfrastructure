@@ -96,17 +96,37 @@ namespace DAL
         public async Task<int> UpsertPersons(IEnumerable<PersonDto> persons)
         {
             var result = 0;
+            var parameters = new Dictionary<string, IList<SqlParameter>>();
             try
             {
                 var sp = "dbo.UpsertPersons";
                 var tableType = "dbo.PersonRow";
-                var command = new SqlCommand(sp);
+                var command = new SqlCommand();
                 var dataTable = new DataTable();
                 dataTable.InitPerson(persons);
-                var param = command.Parameters.AddWithValue("@personRows", dataTable);
+                var param = new SqlParameter("@personRows", dataTable);
                 param.TypeName = tableType;
                 param.SqlDbType = SqlDbType.Structured;
-                result = await _personAdoRepository.ExecuteNonQueryAsync(command);
+                parameters.Add(sp, new List<SqlParameter> { param });
+
+                var sp2 = "dbo.UpsertPhoneNumbers";
+                var tableType2 = "dbo.PhoneNumberRow";
+                var dataTable2 = new DataTable();
+                dataTable2.InitPhoneNumbers(persons);
+                var param2 = new SqlParameter("@phoneNumberRows", dataTable2);
+                param2.TypeName = tableType2;
+                param2.SqlDbType = SqlDbType.Structured;
+                parameters.Add(sp2, new List<SqlParameter> { param2 });
+
+                var sp3 = "dbo.UpsertFriendPhoneNumbers";
+                var tableType3 = "dbo.FriendPhoneNumberRow";
+                var dataTable3 = new DataTable();
+                dataTable3.InitFriendPhoneNumbers(persons);
+                var param3 = new SqlParameter("@friendPhoneNumberRows", dataTable3);
+                param3.TypeName = tableType3;
+                param3.SqlDbType = SqlDbType.Structured;
+                parameters.Add(sp3, new List<SqlParameter> { param3 });
+                result = await _personAdoRepository.ExecuteTransactionNonQueryAsync(command, parameters);
                 return result;
             }
             catch (Exception ex)

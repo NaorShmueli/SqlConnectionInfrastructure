@@ -1,18 +1,24 @@
 ﻿USE [naor-pc]
 GO
 
-
-CREATE PROCEDURE dbo.GetPerson
+CREATE PROCEDURE [dbo].[GetPerson]
 @id varchar(100)
 AS
 BEGIN
 SELECT 
-Id,
+p.Id,
 FirstName,
 LastName,
 Age,
 [Address],
-City
-FROM Persons
-WHERE Id = @id
+City,
+pn.PhoneNumber,
+fpn.FriendName,
+fpn.PhoneNumber as FriendPhoneNumber
+FROM Persons p
+INNER JOIN PhoneNumbers pn
+ON (pn.PersonId = @id)
+INNER JOIN FriendPhoneNumbers fpn
+ON (fpn.PersonId = @id)
+WHERE p.Id = @id
 END

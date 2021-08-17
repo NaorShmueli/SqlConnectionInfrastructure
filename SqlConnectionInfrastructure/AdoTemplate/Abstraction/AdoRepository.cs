@@ -39,6 +39,35 @@ namespace AdoTemplate.Abstraction
                 return default;
             }
         }
+        public async virtual Task<int> ExecuteTransactionNonQueryAsync(SqlCommand command, IDictionary<string,IList<SqlParameter>> parameters)
+        {
+            await using var con = new SqlConnection(_connectionStrings);
+            command.Connection = con;
+            command.CommandType = CommandType.StoredProcedure;
+            await con.OpenAsync();
+            var rowEffected = 0;
+            var transaction = con.BeginTransaction();
+            command.Transaction = transaction;
+            try
+            {
+                foreach (var item in parameters)
+                {
+                    command.Parameters.Clear();
+                    command.CommandText = item.Key;
+                    command.Parameters.AddRange(item.Value.Select(x => x).ToArray());
+                    rowEffected = await command.ExecuteNonQueryAsync();
+                }
+                await transaction.CommitAsync();
+                return rowEffected;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occur in ExecuteNonQueryAsync. Rollback");
+                await transaction.RollbackAsync();
+                return default;
+            }
+        }
         public async virtual Task<IEnumerable<T>> ExecuteQueryAsync(SqlCommand command)
         {
             var list = new List<T>();

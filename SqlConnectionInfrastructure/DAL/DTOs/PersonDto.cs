@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DAL.DB.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,5 +24,7 @@ namespace DAL.DTOs
         public int Age { get; set; }
         public string Address { get; set; }
         public string City { get; set; }
+        public IList<string> PhoneNumbers { get; set; }
+        public IList<FriendPhoneNumber> FriendPhoneNumbers { get; set; }
     }
 }
