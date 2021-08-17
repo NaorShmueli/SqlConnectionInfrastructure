@@ -22,7 +22,7 @@ namespace AdoExample.Controllers
         }
 
         [HttpPost("upsert")]
-        public async Task<IActionResult> Upsert(IList<PersonDto> persons)
+        public async Task<IActionResult> Upsert([FromBody]IList<PersonDto> persons)
         {
             var rowEffected = await _connector.UpsertPersons(persons);
             return Ok(rowEffected);

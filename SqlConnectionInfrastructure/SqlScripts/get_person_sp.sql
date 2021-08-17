@@ -3,7 +3,7 @@ GO
 
 
 CREATE PROCEDURE dbo.GetPerson
-@id varchar
+@id varchar(100)
 AS
 BEGIN
 SELECT 

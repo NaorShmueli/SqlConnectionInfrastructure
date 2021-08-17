@@ -3,7 +3,7 @@ GO
 
 
 CREATE PROCEDURE dbo.DeletePerson
-@id varchar
+@id varchar(100)
 AS
 BEGIN
 DELETE Persons
