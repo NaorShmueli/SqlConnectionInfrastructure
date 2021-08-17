@@ -2,6 +2,7 @@
 using DAL.DTOs;
 using DAL.Extensions;
 using DAL.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,12 @@ namespace DAL
     {
         private readonly PersonAdoRepository _personAdoRepository;
         private readonly ILogger<DataAccessConnector> _logger;
+
+        public DataAccessConnector(ILogger<DataAccessConnector> logger, ILoggerFactory loggerFactory, IConfiguration configuration)
+        {
+            _logger = logger;
+            _personAdoRepository = new PersonAdoRepository(new Logger<PersonAdoRepository>(loggerFactory), configuration);
+        }
         public async Task<bool> DeletePerson(string id)
         {
             var result = false;
@@ -61,7 +68,32 @@ namespace DAL
             return result;
         }
 
-        public async Task<int> UpsertPersons(IEnumerable<UpsertPersonModel> persons)
+        public async Task<IEnumerable<PersonDto>> GetPersons()
+        {
+            List<PersonDto> result = null;
+            try
+            {
+                var sp = "dbo.GetPersons";
+                var command = new SqlCommand(sp);
+                var personList = await _personAdoRepository.ExecuteQueryAsync(command);
+                if (personList != null)
+                {
+                    result = new List<PersonDto>();
+                    result.AddRange(personList.Select(x => x.ToDto()));
+                }
+                else
+                {
+                    _logger.LogWarning($"Person table empty");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "GetPersons failed");
+            }
+            return result;
+        }
+
+        public async Task<int> UpsertPersons(IEnumerable<PersonDto> persons)
         {
             var result = 0;
             try

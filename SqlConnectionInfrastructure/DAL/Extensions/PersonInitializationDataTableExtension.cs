@@ -1,4 +1,5 @@
 ﻿using DAL.DB.SqlModels;
+using DAL.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -10,7 +11,7 @@ namespace DAL.Extensions
 {
     internal static class PersonInitializationDataTableExtension
     {
-        internal static void InitPerson(this DataTable dataTable, IEnumerable<UpsertPersonModel> persons)
+        internal static void InitPerson(this DataTable dataTable, IEnumerable<PersonDto> persons)
         {
             dataTable.Columns.Add(new DataColumn("Id", typeof(string)));
             dataTable.Columns.Add(new DataColumn("FirstName", typeof(string)));

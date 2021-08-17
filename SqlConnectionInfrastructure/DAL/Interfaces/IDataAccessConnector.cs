@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace DAL.Interfaces
 {
-    interface IDataAccessConnector
+    public interface IDataAccessConnector
     {
-        Task<int> UpsertPersons(IEnumerable<UpsertPersonModel> persons);
+        Task<int> UpsertPersons(IEnumerable<PersonDto> persons);
         Task<PersonDto> GetPerson(string id);
+        Task<IEnumerable<PersonDto>> GetPersons();
         Task<bool> DeletePerson(string id);
     }
 }
