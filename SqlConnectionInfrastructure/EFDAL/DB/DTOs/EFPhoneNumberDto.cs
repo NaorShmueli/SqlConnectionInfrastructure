@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace EntityFrameworkTemplate.Abstraction
+namespace EFDAL.DB.DTOs
 {
-    public class IEntity
+    public class EFPhoneNumberDto
     {
-        public Guid Id { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }

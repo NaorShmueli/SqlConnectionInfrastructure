@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace EntityFrameworkTemplate.Abstraction
 {
-    public abstract class GenericRepository<T> : IRepository<T> where T : IEntity
+    public abstract class GenericRepository<T> : IRepository<T> where T : Entity
     {
         protected DbContext _dbContext;
         private readonly ILogger<GenericRepository<T>> _logger;
@@ -19,11 +19,12 @@ namespace EntityFrameworkTemplate.Abstraction
             _logger = logger;
             _dbContext = dbContext;
         }
-        public async Task<T> Add(T entity)
+        public virtual async Task<T> Add(T entity)
         {
             try
             {
                 await _dbContext.AddAsync(entity);
+                await this.SaveAsync();
             }
             catch (Exception ex)
             {
@@ -32,7 +33,7 @@ namespace EntityFrameworkTemplate.Abstraction
             return entity;
         }
 
-        public IEnumerable<T> Find(Expression<Func<T, bool>> predicate)
+        public virtual IEnumerable<T> Find(Expression<Func<T, bool>> predicate)
         {
             try
             {
@@ -46,7 +47,7 @@ namespace EntityFrameworkTemplate.Abstraction
             }
         }
 
-        public async Task<T> Get(Guid id)
+        public virtual async Task<T> Get(Guid id)
         {
             try
             {
@@ -60,7 +61,7 @@ namespace EntityFrameworkTemplate.Abstraction
             }
         }
 
-        public IEnumerable<T> GetAll()
+        public virtual IEnumerable<T> GetAll()
         {
             try
             {
@@ -73,7 +74,7 @@ namespace EntityFrameworkTemplate.Abstraction
             }
         }
 
-        public async Task<bool> Save()
+        public virtual async Task<bool> SaveAsync()
         {
             var result = true;
             try
@@ -89,17 +90,34 @@ namespace EntityFrameworkTemplate.Abstraction
             return result;
         }
 
-        public T Update(T entity)
+        public virtual Task<T> Update(T entity)
         {
             try
             {
-                _dbContext.Update<T>(entity);
-                return entity;
+                _dbContext.Set<T>().Attach(entity);
+                _dbContext.Entry(entity).State = EntityState.Modified;
+                _dbContext.SaveChanges();
+                return Task.FromResult(entity);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, $"Failed Update entity with id  {entity.Id}");
-                return default(T);
+                return default(Task<T>);
+            }
+        }
+
+        public virtual bool Delete(T entity)
+        {
+            try
+            {
+                _dbContext.Remove(entity);
+                _dbContext.SaveChanges();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, $"Failed Delete entity with id  {entity.Id}");
+                return default;
             }
         }
     }

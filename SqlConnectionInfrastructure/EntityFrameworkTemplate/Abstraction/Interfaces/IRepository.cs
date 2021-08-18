@@ -10,11 +10,12 @@ namespace EntityFrameworkTemplate.Abstraction.Interfaces
     public interface IRepository<T>
     {
         Task<T> Add(T entity);
-        T Update(T entity);
+        Task<T> Update(T entity);
         Task<T> Get(Guid id);
         IEnumerable<T> GetAll();
         IEnumerable<T> Find(Expression<Func<T,bool>> predicate);
-        Task<bool> Save();
+        bool Delete(T entity);
+        Task<bool> SaveAsync();
 
     }
 }
