@@ -10,7 +10,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using DAL.Extensions;
 namespace DAL
 {
     public class DataAccessConnector : IDataAccessConnector
@@ -53,15 +53,14 @@ namespace DAL
                 var command = new SqlCommand(sp);
                 command.Parameters.Add("@id", System.Data.SqlDbType.VarChar).Value = id;
                 var personList = await _personAdoRepository.ExecuteQueryAsync(command);
-                var person = personList.FirstOrDefault();
-                if (person != null)
-                {
-                    result = person.ToDto();
-                }
-                else
+                var dtos = personList.CreateDtos();
+                result = dtos.FirstOrDefault();
+                if (result == null)
                 {
                     _logger.LogWarning($"Person with id = {id} not found");
+
                 }
+                return result;
             }
             catch (Exception ex)
             {
@@ -78,15 +77,15 @@ namespace DAL
                 var sp = "dbo.GetPersons";
                 var command = new SqlCommand(sp);
                 var personList = await _personAdoRepository.ExecuteQueryAsync(command);
-                if (personList != null)
-                {
-                    result = new List<PersonDto>();
-                    result.AddRange(personList.Select(x => x.ToDto()));
-                }
-                else
+                var dtos = personList.CreateDtos();
+
+                if (personList == null)
                 {
                     _logger.LogWarning($"Person table empty");
                 }
+                return dtos;
+
+
             }
             catch (Exception ex)
             {

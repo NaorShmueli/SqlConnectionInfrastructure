@@ -1,4 +1,5 @@
-﻿using DAL.DB.Models;
+﻿using DAL.Comparer;
+using DAL.DB.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace DAL.DTOs
 {
     public class PersonDto
     {
-        public PersonDto(string id, string firstName, string lastName, int age, string address, string city)
+        public PersonDto(string id, string firstName, string lastName, int age, string address, string city, IList<string> phoneNumbers, IList<FriendPhoneNumber> friendPhoneNumbers)
         {
             Id = id;
             FirstName = firstName;
@@ -17,6 +18,8 @@ namespace DAL.DTOs
             Age = age;
             Address = address;
             City = city;
+            PhoneNumbers = phoneNumbers.Distinct().ToList();
+            FriendPhoneNumbers = friendPhoneNumbers.Distinct(new FriendPhoneNumberEqualityComparer()).ToList();
         }
         public string Id { get; set; }
         public string FirstName { get; set; }

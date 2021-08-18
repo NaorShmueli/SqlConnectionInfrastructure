@@ -11,7 +11,10 @@ FirstName,
 LastName,
 Age,
 [Address],
-City
+City,
+pn.PhoneNumber,
+fpn.FriendName,
+fpn.PhoneNumber as FriendPhoneNumber
 FROM Persons p
 INNER JOIN PhoneNumbers pn
 ON (pn.PersonId = p.Id)

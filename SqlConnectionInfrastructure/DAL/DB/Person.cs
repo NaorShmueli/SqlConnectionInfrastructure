@@ -20,6 +20,8 @@ namespace DAL.DB
             Age = reader.GetInt32(reader.GetOrdinal("Age"));
             Address = reader.GetString(reader.GetOrdinal("Address"));
             City = reader.GetString(reader.GetOrdinal("City"));
+            PhoneNumbers = new List<string> { reader.GetString(reader.GetOrdinal("PhoneNumber")) };
+            FriendPhoneNumbers = new List<FriendPhoneNumber>() { new FriendPhoneNumber(reader.GetString(reader.GetOrdinal("FriendName")), reader.GetString(reader.GetOrdinal("FriendPhoneNumber"))) };
         }
 
         public string Id { get; set; }
@@ -33,7 +35,7 @@ namespace DAL.DB
 
         internal PersonDto ToDto()
         {
-            return new PersonDto(Id, FirstName, LastName, Age, Address, City);
+            return new PersonDto(Id, FirstName, LastName, Age, Address, City, PhoneNumbers, FriendPhoneNumbers);
         }
     }
 }
