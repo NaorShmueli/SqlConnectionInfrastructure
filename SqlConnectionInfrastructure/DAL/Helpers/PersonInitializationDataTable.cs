@@ -1,5 +1,6 @@
 ﻿using DAL.DB.SqlModels;
 using DAL.DTOs;
+using DAL.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -7,12 +8,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DAL.Extensions
+namespace DAL.Helpers
 {
-    internal static class PersonInitializationDataTableExtension
+    public class PersonInitializationDataTable : IPersonInitializationDataTable
     {
-        internal static void InitPerson(this DataTable dataTable, IEnumerable<PersonDto> persons)
+        public DataTable InitPerson(IEnumerable<PersonDto> persons)
         {
+            var dataTable = new DataTable();
             dataTable.Columns.Add(new DataColumn("Id", typeof(string)));
             dataTable.Columns.Add(new DataColumn("FirstName", typeof(string)));
             dataTable.Columns.Add(new DataColumn("LastName", typeof(string)));
@@ -31,10 +33,12 @@ namespace DAL.Extensions
                 row["City"] = person.City;
                 dataTable.Rows.Add(row);
             }
-
+            return dataTable;
         }
-        internal static void InitPhoneNumbers(this DataTable dataTable,IEnumerable<PersonDto> persons)
+        public DataTable InitPhoneNumbers(IEnumerable<PersonDto> persons)
         {
+            var dataTable = new DataTable();
+
             dataTable.Columns.Add(new DataColumn("PersonId", typeof(string)));
             dataTable.Columns.Add(new DataColumn("PhoneNumber", typeof(string)));
 
@@ -48,11 +52,14 @@ namespace DAL.Extensions
                     dataTable.Rows.Add(row);
                 }
             }
+            return dataTable;
 
         }
 
-        internal static void InitFriendPhoneNumbers(this DataTable dataTable, IEnumerable<PersonDto> persons)
+        public DataTable InitFriendPhoneNumbers(IEnumerable<PersonDto> persons)
         {
+            var dataTable = new DataTable();
+
             dataTable.Columns.Add(new DataColumn("PersonId", typeof(string)));
             dataTable.Columns.Add(new DataColumn("FriendName", typeof(string)));
             dataTable.Columns.Add(new DataColumn("PhoneNumber", typeof(string)));
@@ -68,6 +75,7 @@ namespace DAL.Extensions
                     dataTable.Rows.Add(row);
                 }
             }
+            return dataTable;
 
         }
     }

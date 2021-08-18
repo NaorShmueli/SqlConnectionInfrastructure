@@ -1,6 +1,5 @@
 ﻿using DAL.DB.SqlModels;
 using DAL.DTOs;
-using DAL.Extensions;
 using DAL.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -18,9 +17,12 @@ namespace DAL
     {
         private readonly PersonAdoRepository _personAdoRepository;
         private readonly ILogger<DataAccessConnector> _logger;
-
-        public DataAccessConnector(ILogger<DataAccessConnector> logger, ILoggerFactory loggerFactory, IConfiguration configuration)
+        private readonly ISqlHelper _sqlHelper;
+        private readonly IPersonInitializationDataTable _personInitializationDataTable;
+        public DataAccessConnector(ILogger<DataAccessConnector> logger, ILoggerFactory loggerFactory, IConfiguration configuration, ISqlHelper sqlHelper, IPersonInitializationDataTable personInitializationDataTable)
         {
+            _sqlHelper = sqlHelper;
+            _personInitializationDataTable = personInitializationDataTable;
             _logger = logger;
             _personAdoRepository = new PersonAdoRepository(new Logger<PersonAdoRepository>(loggerFactory), configuration);
         }
@@ -100,32 +102,17 @@ namespace DAL
             try
             {
                 var sp = "dbo.UpsertPersons";
-                var tableType = "dbo.PersonRow";
                 var command = new SqlCommand();
-                var dataTable = new DataTable();
-                dataTable.InitPerson(persons);
-                var param = new SqlParameter("@personRows", dataTable);
-                param.TypeName = tableType;
-                param.SqlDbType = SqlDbType.Structured;
-                parameters.Add(sp, new List<SqlParameter> { param });
+                var upsertPersonsParameter = _sqlHelper.CreateStructuredParameter("dbo.PersonRow", "@personRows", persons, _personInitializationDataTable.InitPerson);
+                parameters.Add(sp, new List<SqlParameter> { upsertPersonsParameter });
 
                 var sp2 = "dbo.UpsertPhoneNumbers";
-                var tableType2 = "dbo.PhoneNumberRow";
-                var dataTable2 = new DataTable();
-                dataTable2.InitPhoneNumbers(persons);
-                var param2 = new SqlParameter("@phoneNumberRows", dataTable2);
-                param2.TypeName = tableType2;
-                param2.SqlDbType = SqlDbType.Structured;
-                parameters.Add(sp2, new List<SqlParameter> { param2 });
+                var upsertPhoneNumbers = _sqlHelper.CreateStructuredParameter("dbo.PhoneNumberRow", "@phoneNumberRows", persons, _personInitializationDataTable.InitPhoneNumbers);
+                parameters.Add(sp2, new List<SqlParameter> { upsertPhoneNumbers });
 
                 var sp3 = "dbo.UpsertFriendPhoneNumbers";
-                var tableType3 = "dbo.FriendPhoneNumberRow";
-                var dataTable3 = new DataTable();
-                dataTable3.InitFriendPhoneNumbers(persons);
-                var param3 = new SqlParameter("@friendPhoneNumberRows", dataTable3);
-                param3.TypeName = tableType3;
-                param3.SqlDbType = SqlDbType.Structured;
-                parameters.Add(sp3, new List<SqlParameter> { param3 });
+                var upsertFriendPhoneNumbers = _sqlHelper.CreateStructuredParameter("dbo.FriendPhoneNumberRow", "@friendPhoneNumberRows", persons, _personInitializationDataTable.InitFriendPhoneNumbers);
+                parameters.Add(sp3, new List<SqlParameter> { upsertFriendPhoneNumbers });
                 result = await _personAdoRepository.ExecuteTransactionNonQueryAsync(command, parameters);
                 return result;
             }

@@ -1,4 +1,5 @@
 using DAL;
+using DAL.Helpers;
 using DAL.Interfaces;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
@@ -33,6 +34,9 @@ namespace AdoExample
             ConfigureLogs(services);
             ConfigureMetrics(services);
             services.AddSingleton<IDataAccessConnector, DataAccessConnector>();
+            services.AddSingleton<ISqlHelper, SqlHelper>();
+            services.AddSingleton<IPersonInitializationDataTable, PersonInitializationDataTable>();
+
             services.AddControllers().AddNewtonsoftJson(option =>
             {
                 option.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();

@@ -2,15 +2,19 @@
 GO
 
 
-CREATE PROCEDURE dbo.GetPersons
+CREATE PROCEDURE [dbo].[GetPersons]
 AS
 BEGIN
 SELECT 
-Id,
+p.Id,
 FirstName,
 LastName,
 Age,
 [Address],
 City
-FROM Persons
+FROM Persons p
+INNER JOIN PhoneNumbers pn
+ON (pn.PersonId = p.Id)
+INNER JOIN FriendPhoneNumbers fpn
+ON (fpn.PersonId = p.Id)
 END
