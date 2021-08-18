@@ -5,9 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
+[assembly: InternalsVisibleTo("Tests")]
 namespace DAL.DB
 {
     internal class Person : IEntity
@@ -22,6 +24,11 @@ namespace DAL.DB
             City = reader.GetString(reader.GetOrdinal("City"));
             PhoneNumbers = new List<string> { reader.GetString(reader.GetOrdinal("PhoneNumber")) };
             FriendPhoneNumbers = new List<FriendPhoneNumber>() { new FriendPhoneNumber(reader.GetString(reader.GetOrdinal("FriendName")), reader.GetString(reader.GetOrdinal("FriendPhoneNumber"))) };
+        }
+        public Person()
+        {
+            PhoneNumbers = new List<string>();
+            FriendPhoneNumbers = new List<FriendPhoneNumber>();
         }
 
         public string Id { get; set; }

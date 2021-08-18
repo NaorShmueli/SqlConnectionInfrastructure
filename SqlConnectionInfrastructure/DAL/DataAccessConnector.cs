@@ -19,7 +19,7 @@ namespace DAL
         private readonly ILogger<DataAccessConnector> _logger;
         private readonly ISqlHelper _sqlHelper;
         private readonly IPersonInitializationDataTable _personInitializationDataTable;
-        public DataAccessConnector(ILogger<DataAccessConnector> logger, ILoggerFactory loggerFactory, IConfiguration configuration, ISqlHelper sqlHelper, IPersonInitializationDataTable personInitializationDataTable)
+        internal DataAccessConnector(ILogger<DataAccessConnector> logger, ILoggerFactory loggerFactory, IConfiguration configuration, ISqlHelper sqlHelper, IPersonInitializationDataTable personInitializationDataTable)
         {
             _sqlHelper = sqlHelper;
             _personInitializationDataTable = personInitializationDataTable;
