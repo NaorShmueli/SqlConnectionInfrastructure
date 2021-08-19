@@ -94,8 +94,8 @@ namespace EntityFrameworkTemplate.Abstraction
         {
             try
             {
-                _dbContext.Set<T>().Attach(entity);
-                //_dbContext.Entry(entity).State = EntityState.Modified;
+                //_dbContext.Set<T>().Attach(entity);
+                _dbContext.Update(entity);
                 _dbContext.SaveChanges();
                 return Task.FromResult(entity);
             }

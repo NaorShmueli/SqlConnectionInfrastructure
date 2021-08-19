@@ -1,4 +1,5 @@
 ﻿using EFDAL.DB.Entities;
+using EFDAL.DB.EntityConfiguration;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -30,11 +31,7 @@ namespace EFDAL.DB
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<EFPerson>()
-                .HasMany(p => p.PhoneNumbers).WithOne();
-            modelBuilder.Entity<EFPerson>()
-              .HasMany(p => p.FriendPhoneNumbers).WithOne();
-
+            modelBuilder.ApplyConfiguration(new EFPersonConfiguration());
             base.OnModelCreating(modelBuilder);
         }
     }

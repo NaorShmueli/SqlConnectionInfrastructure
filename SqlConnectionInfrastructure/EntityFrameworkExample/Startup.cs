@@ -63,24 +63,6 @@ namespace EntityFrameworkExample
                 endpoint.MapHealthChecks("/health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
             });
             EnableSwagger(app);
-           // CreateInitialDatabase(loggerFactory);
-        }
-        public void CreateInitialDatabase(ILoggerFactory loggerFactory)
-        {
-            using (var context = new PersonContext(Configuration))
-            {
-                context.Database.EnsureDeleted();
-                context.Database.EnsureCreated();
-
-                //var person = new EFPerson { FirstName = "Naor", LastName = "Shmuelo",PhoneNumbers = new List<EFPhoneNumber> { new EFPhoneNumber { PhoneNumber = "0544535540"} },FriendPhoneNumbers = new List<EFFriendPhoneNumber> { new EFFriendPhoneNumber{ FriendName = "Batel",PhoneNumber = "0507915159"} } };
-
-
-                //var personRepository = new EFPersonRepository(context, loggerFactory);
-
-                //personRepository.Add(person);
-
-                //personRepository.SaveAsync();
-            }
         }
 
     }
