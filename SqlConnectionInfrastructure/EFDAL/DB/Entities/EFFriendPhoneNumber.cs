@@ -9,6 +9,7 @@ namespace EFDAL.DB.Entities
 {
     public class EFFriendPhoneNumber : Entity
     {
+        public Guid EFPersonId { get; set; }
         public string FriendName { get; set; }
         public string PhoneNumber { get; set; }
     }

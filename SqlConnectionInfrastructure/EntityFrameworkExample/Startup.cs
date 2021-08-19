@@ -63,7 +63,7 @@ namespace EntityFrameworkExample
                 endpoint.MapHealthChecks("/health", new HealthCheckOptions { ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse });
             });
             EnableSwagger(app);
-            //CreateInitialDatabase(loggerFactory);
+           // CreateInitialDatabase(loggerFactory);
         }
         public void CreateInitialDatabase(ILoggerFactory loggerFactory)
         {

@@ -45,8 +45,18 @@ namespace EntityFrameworkExample.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> Update(Guid id,[FromBody]EFPersonDto person)
         {
-            var updatedEntity = new EFPerson(person);
-            updatedEntity.Id = id;
+            //var updatedEntity = new EFPerson(person);
+            //updatedEntity.Id = id;
+            var updatedEntity = await _repository.Get(id);
+            updatedEntity.FirstName = person.FirstName;
+            updatedEntity.LastName = person.LastName;
+            updatedEntity.Age = person.Age;
+            updatedEntity.Address = person.Address;
+            updatedEntity.City = person.City;
+            updatedEntity.PhoneNumbers = person.PhoneNumbers.Select(x => new EFPhoneNumber { PhoneNumber = x.PhoneNumber, Id = Guid.NewGuid() }).ToList();
+            updatedEntity.FriendPhoneNumbers = person.FriendPhoneNumbers.Select(x => new EFFriendPhoneNumber { PhoneNumber = x.PhoneNumber, Id = Guid.NewGuid(), FriendName = x.FriendName }).ToList();
+
+            //_context.Entry(updatedEntity).State = EntityState.Modified;
             var result = await _repository.Update(updatedEntity);
             return Ok(result);
         }

@@ -21,16 +21,17 @@ namespace EFDAL.DB.Repositories
 
         public async override Task<EFPerson> Update(EFPerson entity)
         {
-            var updatedEntity = _context.Persons.Include(x => x.FriendPhoneNumbers).Include(x => x.PhoneNumbers).FirstOrDefault(x => x.Id == entity.Id);
-            updatedEntity.FirstName = entity.FirstName;
-            updatedEntity.LastName = entity.LastName;
-            updatedEntity.Age = entity.Age;
-            updatedEntity.Address = entity.Address;
-            updatedEntity.City = entity.City;
-            updatedEntity.PhoneNumbers = entity.PhoneNumbers;
-            updatedEntity.FriendPhoneNumbers = entity.FriendPhoneNumbers;
-            //_context.Entry(updatedEntity).State = EntityState.Modified;
-            return await base.Update(updatedEntity);
+            try
+            {
+                //_context.PhoneNumbers.RemoveRange(_context.PhoneNumbers.AsNoTracking().Where(x => x.EFPersonId == entity.Id));
+                //_context.FriendPhoneNumbers.RemoveRange(_context.FriendPhoneNumbers.AsNoTracking().Where(x => x.EFPersonId == entity.Id));
+                return await base.Update(entity);
+            }
+            catch (Exception ex)
+            {
+                return default;
+            }
+            
         }
         public async override Task<EFPerson> Get(Guid id)
         {
