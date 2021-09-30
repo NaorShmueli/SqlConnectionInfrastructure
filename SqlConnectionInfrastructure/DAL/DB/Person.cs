@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 [assembly: InternalsVisibleTo("Tests")]
 namespace DAL.DB
 {
-    internal class Person : IEntity
+    public class Person : IEntity
     {
         public Person(SqlDataReader reader)
         {

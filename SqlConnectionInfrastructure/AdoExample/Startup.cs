@@ -33,10 +33,11 @@ namespace AdoExample
             AddHealthChecks(services);
             ConfigureLogs(services);
             ConfigureMetrics(services);
+            var containerHelper = new InternalServicesResolver();
             services.AddSingleton<IDataAccessConnector, DataAccessConnector>();
             services.AddSingleton<ISqlHelper, SqlHelper>();
             services.AddSingleton<IPersonInitializationDataTable, PersonInitializationDataTable>();
-
+            containerHelper.RegisterInternalServices(services);
             services.AddControllers().AddNewtonsoftJson(option =>
             {
                 option.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();

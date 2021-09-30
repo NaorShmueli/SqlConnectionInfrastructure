@@ -11,20 +11,23 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using DAL.Extensions;
+using AdoTemplate.Abstraction;
+using DAL.DB;
+
 namespace DAL
 {
     public class DataAccessConnector : IDataAccessConnector
     {
-        private readonly PersonAdoRepository _personAdoRepository;
+        private readonly AdoRepository<Person> _personAdoRepository;
         private readonly ILogger<DataAccessConnector> _logger;
         private readonly ISqlHelper _sqlHelper;
         private readonly IPersonInitializationDataTable _personInitializationDataTable;
-        internal DataAccessConnector(ILogger<DataAccessConnector> logger, ILoggerFactory loggerFactory, IConfiguration configuration, ISqlHelper sqlHelper, IPersonInitializationDataTable personInitializationDataTable)
+        public DataAccessConnector(ILogger<DataAccessConnector> logger, ILoggerFactory loggerFactory, IConfiguration configuration, ISqlHelper sqlHelper, IPersonInitializationDataTable personInitializationDataTable, AdoRepository<Person> personAdoRepository)
         {
             _sqlHelper = sqlHelper;
             _personInitializationDataTable = personInitializationDataTable;
             _logger = logger;
-            _personAdoRepository = new PersonAdoRepository(new Logger<PersonAdoRepository>(loggerFactory), configuration);
+            _personAdoRepository = personAdoRepository;
         }
         public async Task<bool> DeletePerson(string id)
         {

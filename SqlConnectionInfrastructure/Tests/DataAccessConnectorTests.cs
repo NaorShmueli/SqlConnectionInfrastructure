@@ -1,4 +1,5 @@
-﻿using DAL;
+﻿using AdoTemplate.Abstraction;
+using DAL;
 using DAL.DB;
 using DAL.Interfaces;
 using Moq;
@@ -15,9 +16,11 @@ namespace Tests
     public class DataAccessConnectorTests : UnitTestBase
     {
         private readonly IDataAccessConnector _dataAccessConnector;
+        private readonly Mock<AdoRepository<Person>> _mockAdoRepository;
         public DataAccessConnectorTests()
         {
-            _dataAccessConnector = new DataAccessConnector(_logger.Object, _loggerFactory.Object, _configuration, _sqlHelper.Object, _personInitializationDataTable.Object);
+            _mockAdoRepository = _mockRepository.Create<AdoRepository<Person>>();
+            _dataAccessConnector = new DataAccessConnector(_logger.Object, _loggerFactory.Object, _configuration, _sqlHelper.Object, _personInitializationDataTable.Object, _mockAdoRepository.Object);
         }
 
         [Fact]
